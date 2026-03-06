@@ -1,12 +1,15 @@
 FROM node:20-alpine
 
+# Cài đặt git (Bắt buộc để chạy lệnh setup của Uptime Kuma)
+RUN apk add --no-cache git
+
 # Tạo thư mục làm việc
 WORKDIR /app
 
 # Copy toàn bộ mã nguồn vào container
 COPY . .
 
-# Chạy lệnh setup chuẩn của Uptime Kuma (đã bao gồm npm ci và build giao diện)
+# Chạy lệnh setup chuẩn của Uptime Kuma
 RUN npm run setup
 
 # Mở cổng giao tiếp
