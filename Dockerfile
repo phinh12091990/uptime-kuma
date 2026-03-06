@@ -1,19 +1,16 @@
 FROM node:20-alpine
 
-# Cài đặt git (Bắt buộc để chạy lệnh setup của Uptime Kuma)
-RUN apk add --no-cache git
-
 # Tạo thư mục làm việc
 WORKDIR /app
 
-# Copy toàn bộ mã nguồn vào container
+# Copy toàn bộ mã nguồn
 COPY . .
 
-# Chạy lệnh setup chuẩn của Uptime Kuma
-RUN npm run setup
+# Chạy trực tiếp lệnh cài đặt và tải giao diện, bỏ qua bước Git checkout
+RUN npm ci --omit dev --no-audit && npm run download-dist
 
 # Mở cổng giao tiếp
 EXPOSE 3001
 
-# Lệnh khởi động ứng dụng
+# Lệnh khởi động
 CMD ["node", "server/server.js"]
