@@ -1,1 +1,28 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    
+    # 1. Tắt port ra ngoài để bảo mật. Traefik sẽ kết nối ngầm bên trong.
+    # ports:
+    #   - "3001:3001"
+    
+    # 2. Khai báo cho Traefik biết cách định tuyến tên miền vào container này
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.uptime-web.rule=Host(`up.matbaohosting.com`)
+      - traefik.http.routers.uptime-web.entrypoints=web
+      - traefik.http.services.uptime-svc.loadbalancer.server.port=3001
+      
+    # 3. Gắn container vào mạng của Dokploy
+    networks:
+      - dokploy-network
+      - default
 
+# Khai báo mạng nội bộ của Dokploy để hệ thống nhận diện
+networks:
+  dokploy-network:
+    external: true
